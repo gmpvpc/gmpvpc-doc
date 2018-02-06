@@ -1,0 +1,154 @@
+@startuml
+
+package activities {
+    class LoginActivity {
+        -txtLogin: EditText[1]
+        -txtPassword: EditText[1]
+        -btnLogin: Button[1]
+    }
+    class MainActivity {
+        -btnTraining: Button[1]
+        -btnStatistics: Button[1]
+        -btnSettings: Button[1]
+
+    }
+    class SettingsActivity {
+        -txtPassword: EditText[1]
+        -txtRepeatPassword: EditText[1]
+        -btnSaveSettings: Button[1]
+    }
+    class TrainingActivity {
+        -btnDuration: RadioButton[1]
+        -btnSpeed: RadioButton[1]
+        -btnAccuracy: RadioButton[1]
+    }
+    class CalibrationActivity {
+        -btnCancel: Button[1]
+    }
+    class TrainingResultActivity {
+        -lblDate: TextView[1]
+        -lblTime: TextView[1]
+        -lblPunch: TextView[1]
+        -lblVelocity: TextView[1]
+        -lblAccuracy: TextView[1]
+    }
+    class GlobalStatsActivity {
+        -btnHistory: Button[1]
+    }
+    class HistoryActivity {
+
+    }
+    class AdminActivity {
+        -btnUsers: Button[1]
+        -btnGloves: Button[1]
+        -btnDojoSettings: Button[1]
+    }
+}
+
+package fragments {
+    class ChartFragment {
+
+    }
+    class UserListFragment {
+        -lstUsers: ListView[1]
+    }
+    class GloveListFragment {
+        -lstGloves: ListView[1]
+    }
+    class HistoryFragment {
+        -lstHistory: ListView[1]
+    }
+    class GlobalStatsFragment {
+        -lstGlobalStats: ListView[1]
+    }
+    TrainingResultActivity --> "1 -chartFragment" ChartFragment
+    AdminActivity --> "1 -gloveListFragment" GloveListFragment
+    AdminActivity --> "1 -userListFragment" UserListFragment
+    HistoryActivity --> "1 -historyFragment" HistoryFragment
+    GlobalStatsActivity --> "1 -globalStatsFragments" GlobalStatsFragment
+}
+package adapters {
+    class GlobalResultAdapter {
+        -{static}ITEM: int[1]
+        -{static}NAME: int[1]
+        -{static}POSITION: int[1]
+        -{static}RESULT: int[1]
+        -{static}TITLE: int[1]
+
+    }
+    class UserAdapter {
+
+    }
+    class GloveAdapter {
+
+    }
+    class HistoryAdapter {
+
+    }
+    GlobalStatsFragment --> "1 -globalResultAdapter" GlobalResultAdapter
+    UserListFragment --> "1 -userAdapter" UserAdapter
+    GloveListFragment --> "1 -gloveAdapter" GloveAdapter
+    HistoryFragment --> "1 -historyAdapter" HistoryAdapter
+
+}
+package managers {
+    package model {
+        class ClientManagerResult {
+            -result: Object[1]
+            -clazz: Class<?>[1]
+        }
+        enum TypeMethod {
+            CREATE,
+            UPDATE,
+            DELETE,
+            READ
+        }
+    }
+    interface ClientManagerListener {
+        +fireResponse(result: ClientManagerResult[1])
+    }
+    interface ClientManager {
+        +read(listener: ClientManagerListener[1], url: String[1])
+        +create(listener: ClientManagerListener[1], url: String[1])
+        +update(listener: ClientManagerListener[1], url: String[1])
+        +delete(listener: ClientManagerListener[1], url: String[1])
+    }
+    abstract class ClientManagerAsync implements ClientManager {
+        +read(listener: ClientManagerListener[1], url: String[1])
+        +create(listener: ClientManagerListener[1], url: String[1])
+        +update(listener: ClientManagerListener[1], url: String[1])
+        +delete(listener: ClientManagerListener[1], url: String[1])
+        #{abstract}get(url: String[1]): String[1]
+        #{abstract}post(url: String[1], ): String[1]
+        #{abstract}put(url: String[1]): String[1]
+        #{abstract}delete(url: String[1]): String[1]
+    }
+    class ClientAsyncTask {
+        -jsonObject: JSONObject[1]
+        #doInBackground(urls: String[0..*]): String[1]
+        #onPostExecute(result: String[1])
+    }
+    class HttpClientManager extends ClientManagerAsync {
+        -execute(request: HttpRequestBase[1]): String
+        -convertInputStreamToString(inputStream: InputStream[1]) : String[1]
+    }
+    class DojoManager <<Singleton>> {
+
+    }
+    ClientAsyncTask --> "1 -typeMethod" TypeMethod
+    ClientAsyncTask --> "1 -listener" ClientManagerListener
+    ClientManagerAsync ..> ClientAsyncTask
+    ClientManagerListener ..> ClientManagerResult
+    ClientManagerListener <.. ClientManager
+    DojoManager -up-> ClientManager
+    LoginActivity .up.> DojoManager : <<usage>>
+    MainActivity .up.> DojoManager : <<usage>>
+    SettingsActivity .up.> DojoManager : <<usage>>
+    TrainingActivity .up.> DojoManager : <<usage>>
+    CalibrationActivity .up.> DojoManager : <<usage>>
+    TrainingResultActivity ..up> DojoManager : <<usage>>
+    GlobalStatsActivity .up.> DojoManager : <<usage>>
+    HistoryActivity .up.> DojoManager : <<usage>>
+    AdminActivity .up.> DojoManager : <<usage>>
+}
+@enduml

@@ -1,0 +1,80 @@
+@startuml
+package entities {
+    'abstract class Entity {
+    '    -id: double[1]
+    '    -creationDate: Date[1]
+    '}
+    abstract class Owner {
+
+    }
+    class User {
+        -name: String[1]
+        -password: String[1]
+        -email: String[1]
+    }
+    class Dojo {
+        -name: String[1]
+    }
+    class Glove {
+        -macAddress: String[1]
+        -name: String[1]
+    }
+    enum Hand {
+        RIGHT,
+        LEFT
+    }
+    enum Role {
+        USER,
+        ADMIN
+    }
+    class Session {
+        -endedDate: Date[1]
+    }
+    class Series {
+
+    }
+    class Hit {
+        -duration: int[1]
+        -velocity: double[1]
+        -accuracy: float[1]
+    }
+    class HitRef {
+        -index: int[1]
+        -name: String[1]
+        -duration: int[1]
+        -velocity: double[1]
+        -accuracy: float[1]
+    }
+    class SeriesRef {
+        -name: String[1]
+        -numberOfSequences: int[1]
+    }
+    class VectorRef {
+        -index: int[1]
+        -xAxis: float[1]
+        -yAxis: float[1]
+        -zAxis: float[1]
+    }
+    'Entity <|-- Owner
+    'Entity <|-- Glove
+    'Entity <|-- Session
+    'Entity <|-- Set
+    'Entity <|-- Hit
+    'Entity <|-- SetRef
+    'Entity <|-- VectorRef
+    Owner <|-- User
+    Owner <|-- Dojo
+    User "1" --> "0..* -sessions" Session
+    Session "1" --> "1..* -series" Series
+    Series "1" --> "1..* -combination" Hit
+    SeriesRef --> "1..* -combination" HitRef
+    SeriesRef "0..* -seriesRef" <-- "0..1" User
+    HitRef "1" --> "1..* -vectorRefs" VectorRef
+    Series "*" -- "1 -series" SeriesRef
+    Owner "1 -owner" <-- "*"  Glove
+    Dojo "1" --> "0..* -users" User
+    User "1" --> "0..2" Glove
+    User -left-> "1 -role" Role
+    Glove -> "1" Hand
+}
+@enduml

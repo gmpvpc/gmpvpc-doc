@@ -1,0 +1,20 @@
+@startuml
+
+class Coordinate {
+    -x: float[1]
+    -y: float[1]
+    -z: float[1]
+}
+class PointToCompute {
+    -accelero: Coordinate[1]
+    -gyro: Coordinate[1]
+    -magneto: Coordinate[1]
+}
+class Training {
+    points: PointToCompute[*]
+}
+Coordinate <-- PointToCompute
+Coordinate <-- PointToCompute
+Coordinate <-- PointToCompute
+PointToCompute <-- Training
+@enduml

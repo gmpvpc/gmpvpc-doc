@@ -1,0 +1,62 @@
+@startuml
+(Login to a Back End Server) as (Login)
+Admin -- (Add User)
+Admin -- (Add Glove Sensor)
+Admin -- (Delete User)
+Admin -- (Delete Glove Sensor)
+(Add User) ...> (Login): include
+(Add Glove Sensor) ...> (Login): include
+(Delete User) ...> (Login): include
+(Delete Glove Sensor) ...> (Login): include
+
+
+newpage
+(Login to a Back End Server) as (Login)
+(View All My Training Statistics) as (Statistics)
+(Display One Training Result) as (LastTraining)
+(Compare your stats with global dojo stats) as (Compare)
+(Start a Training) as (StartT)
+(Stop a Training) as (StopT)
+(Follow the glove initialization) as (GloveInit)
+(Waiting for available glove) as (WaitGlove)
+(Access the main page) as (MainPage)
+
+Admin -|> User
+(MainPage) -- User
+(MainPage) ..> (Login) : include
+(MainPage) <.. (Statistics) : extends
+(MainPage) <.. (StartT) : extends
+(StartT) ..> (GloveInit) : include
+(GloveInit) ..> (WaitGlove) : include
+(MainPage) <.. (Change Password) : extends
+(MainPage) <.. (Logout) : extends
+(StartT) <.. (StopT) : include
+(MainPage) <.. (StopT) : extends
+(Statistics) <.. (Clean Statistics) : extends
+(Statistics) <.. (Compare) : extends
+(Statistics) <.. (LastTraining) : extends
+(LastTraining) <.. (Delete result) : extends
+
+newpage
+(Start the DojoHub) as (StartRpi)
+(Stop the DojoHub) as (StopRpi)
+(Start of the communication Server) as (StartServer)
+(Start communication with glove Sensor) as (StartCommGlove)
+
+Admin -- (StartRpi)
+(StartRpi) <.. (StopRpi) : extends
+(StartRpi) ..> (StartServer) : include
+(StartServer) ..> (StartCommGlove) : include
+
+newpage
+(Start the Glove Sensor) as (StartGlove)
+(Stop the Glove Sensor) as (StopGlove)
+(Start communication with glove Sensor) as (StartCommGlove)
+(Start a Training) as (StartT)
+
+User -- (StartGlove)
+(StartGlove) <.. (StopGlove) : extends
+(StartGlove) ..> (StartT) : include
+(StartT) ..> (StartCommGlove) : include
+
+@enduml
