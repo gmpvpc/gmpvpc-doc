@@ -1,0 +1,41 @@
+@startuml
+
+node Hub <<computer>> {
+    component "InfluxDB" as influx <<database>> {
+        database gmpvpc
+    }
+
+    component "PostgreSQL" as postgre <<database>> {
+        database raw_data
+    }
+    
+    component "Node.js" as nodejs {
+        component "Express.js" as express <<web server>>
+
+        component "node-sensortag" as nodesensortag
+
+        artifact "index.js" as index
+
+        nodesensortag <.. index
+        index ..> express
+    }
+
+    influx <.. index
+    index ..> postgre
+}
+
+node "Android smartphone" as android <<device>> {
+    component "GMPVPC Android app" as app
+}
+
+node "Glove" {
+    node SensorTag <<BLE device>> {
+        component "BLE Stack" as ble
+    }
+}
+
+app -- express
+ble = nodesensortag
+
+
+@enduml
