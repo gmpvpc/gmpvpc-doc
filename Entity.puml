@@ -27,7 +27,7 @@ package entities {
         USER,
         ADMIN
     }
-    class Session {
+    class Training {
         -endedDate: Date[1]
     }
     class Series {
@@ -55,17 +55,24 @@ package entities {
         -yAxis: float[1]
         -zAxis: float[1]
     }
+    enum TrainingStatus {
+        PENDING,
+        IN_PROGRESS,
+        PAUSED,
+        FINISHED
+    }
     'Entity <|-- Owner
     'Entity <|-- Glove
-    'Entity <|-- Session
+    'Entity <|-- Training
     'Entity <|-- Set
     'Entity <|-- Hit
     'Entity <|-- SetRef
     'Entity <|-- VectorRef
     Owner <|-- User
     Owner <|-- Dojo
-    User "1" --> "0..* -sessions" Session
-    Session "1" --> "1..* -series" Series
+    User "1" --> "0..* -trainings" Training
+    Training "1" --> "1..* -series" Series
+    Training --> "1 -status" TrainingStatus
     Series "1" --> "1..* -combination" Hit
     SeriesRef --> "1..* -combination" HitRef
     SeriesRef "0..* -seriesRef" <-- "0..1" User
